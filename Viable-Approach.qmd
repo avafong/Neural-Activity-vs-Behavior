@@ -1,0 +1,112 @@
+---
+title: "Viable Approach for ICN 2025"
+authors: Ava, Edward, Christina, Tovi
+format: html
+output: revealjs
+---
+
+# Abstract
+
+In neuroscience, a lot of literature and studies have been based on linking neural activity with specific stimuli. Examples include neurons in area IT that show consistent responses to faces, or neurons in area V1 that have extreme specificity when it comes to orientation. However, there is the question that arises naturally from this–is neural activity (that has been shown to be quite accurate when discerning and responding to specific stimuli) map directly onto predicting an organism’s behavior? In other words, does an organism have conscious access to all the information it computes? Our project aims to answer this question using electrocorticographic data from Miller’s lab that contains data from an experiment where human subjects were presented with face/house images and were required to press a button when they perceived the object to be a face. Thus, this data is rich in allowing us to compare behavioral data with neural activity; we hypothesize that the neural activity that was recorded is an effective measure/predictor of behavior (in this case, a subject’s identification of a face). However, if we find that there is flexibility in the relation between activity and perception, there is a lot of neuroscience literature that we’ve gathered that suggests that there might be an evolutionary advantage to having flexibility in behavior even though neural activity is highly accurate.
+
+```{python}
+import os, requests
+
+fname = 'faceshouses.npz'
+url = "https://osf.io/argh7/download"
+
+if not os.path.isfile(fname):
+  try:
+    r = requests.get(url)
+  except requests.ConnectionError:
+    print("!!! Failed to download data !!!")
+  else:
+    if r.status_code != requests.codes.ok:
+      print("!!! Failed to download data !!!")
+    else:
+      with open(fname, "wb") as fid:
+        fid.write(r.content)
+```
+
+# Installing packages nilearn and nimare and import matplotlib as well as packages to visualize brains and electrode locations
+
+```{python}
+from matplotlib import rcParams
+from matplotlib import pyplot as plt
+
+import nilearn
+# import nimare # currently having issues importing this, but visualization of electrode locations is interesting but not necessary for data analysis. 
+
+rcParams['figure.figsize'] = [20, 4]
+rcParams['font.size'] = 15
+rcParams['axes.spines.top'] = False
+rcParams['axes.spines.right'] = False
+rcParams['figure.autolayout'] = True
+```
+
+# Data loading
+```{python}
+import numpy as np
+
+alldat = np.load(fname, allow_pickle=True)['dat']
+
+# select just one of the recordings here.
+dat1 = alldat[1][0]
+dat2 = alldat[1][1]
+
+print(dat1.keys())
+print(dat2.keys())
+```
+
+# Accessing broadband power in time-varying windows
+```{python}
+from scipy import signal
+
+V = dat1['V'].astype('float32')
+
+b, a = signal.butter(3, [50], btype='high', fs=1000)
+V = signal.filtfilt(b, a, V, 0)
+V = np.abs(V)**2
+b, a = signal.butter(3, [10], btype='low', fs=1000)
+V = signal.filtfilt(b, a, V, 0)
+
+V = V/V.mean(0)
+```
+
+# Averaging the broadband power across all face stimuli and across all house stimuli
+```{python}
+nt, nchan = V.shape
+nstim = len(dat1['t_on'])
+
+trange = np.arange(-200, 400)
+ts = dat1['t_on'][:, np.newaxis] + trange
+V_epochs = np.reshape(V[ts, :], (nstim, 600, nchan))
+
+V_house = (V_epochs[dat1['stim_id'] <= 50]).mean(0)
+V_face = (V_epochs[dat1['stim_id'] > 50]).mean(0)
+```
+
+# Finding the electrodes that distinguish faces from houses
+```{python}
+from scipy import signal
+from nilearn import plotting
+
+plt.figure(figsize=(20, 10))
+for j in range(50):
+  ax = plt.subplot(5, 10, j+1)
+  plt.plot(trange, V_house[:, j], color='orange', label='House')
+  plt.plot(trange, V_face[:, j], color='blue', label='Face')
+  plt.title('ch%d'%j)
+  plt.xticks([-200, 0, 200])
+  plt.ylim([0, 4])
+plt.show()
+```
+
+# Figuring out the shape of the data:
+```{python}
+#print(alldat)
+print(dat1)
+investigating_loc_shape = dat1['locs'].shape
+print(investigating_loc_shape)
+#print(dat2)
+```
