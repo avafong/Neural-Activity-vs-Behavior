@@ -54,7 +54,6 @@ alldat = np.load(fname, allow_pickle=True)['dat']
 dat1 = alldat[1][0]
 dat2 = alldat[1][1]
 
-print(exp1_allpat.shape)
 print(dat1.keys())
 print(dat2.keys())
 ```
