@@ -51,8 +51,8 @@ import numpy as np
 alldat = np.load(fname, allow_pickle=True)['dat']
 
 # select just one of the recordings here.
-dat1 = alldat[0][0]
-dat2 = alldat[0][1]
+dat1 = alldat[1][0]
+dat2 = alldat[1][1]
 
 print(exp1_allpat.shape)
 print(dat1.keys())
@@ -103,119 +103,6 @@ for j in range(50):
 plt.show()
 ```
 
-
-```{python}
-
-# INFO ON MAX RESPONDING ELECTRODE FOR FACE ON A PER PATIENT BASIS, EXP1:
-# Patient 0, Ch 35
-# Patient 1, Ch 46
-# Patient 2, Ch 35
-# Patient 3, Ch 23
-# Patient 4, Ch 15
-# Patient 5, Ch 30
-# Patient 6, Ch 38
-
-# NEW TASK: make a test plot of x-axis is sample, y-axis is the electrode response over the time course to see what the hell is going on. 
-
-
-```
-
-
-```{python}
-# INFO ON MAX RESPONDING ELECTRODE FOR FACE ON A PER PATIENT BASIS, EXP1:
-# Patient 0, Ch 35
-# Patient 1, Ch 46
-# Patient 2, Ch 35
-# Patient 3, Ch 23
-# Patient 4, Ch 15
-# Patient 5, Ch 30
-# Patient 6, Ch 38
-pat0 = create_patient_voltage_responses(0, 35, alldat)
-pat1 = create_patient_voltage_responses(1, 46, alldat)
-pat2 = create_patient_voltage_responses(2, 35, alldat)
-pat3 = create_patient_voltage_responses(3, 23, alldat)
-pat4 = create_patient_voltage_responses(4, 15, alldat)
-pat5 = create_patient_voltage_responses(5, 30, alldat)
-pat6 = create_patient_voltage_responses(6, 38, alldat)
-
-all_clean_data_exp1 = pat0 + pat1 + pat2 + pat3 + pat4 + pat5 + pat6
-
-all_clean_data_face = list(filter(lambda x: x.id == 'face', all_clean_data_exp1))
-all_clean_data_house = list(filter(lambda x: x.id == 'house', all_clean_data_exp1))
-
-maximal_house_value = max(list(map(lambda x: x.voltage, all_clean_data_house)))
-minimal_face_value = min(list(map(lambda x: x.voltage, all_clean_data_face)))
-
-print(maximal_house_value)
-print(minimal_face_value)
-
-create_voltage_response()
-
-
-
-```
-
-```{python}
-import seaborn as sns
-import pandas as pd
-
-def plot_voltage_violin(responses: list[VoltageResponse]):
-    """
-    Plots a violin plot from a list of VoltageResponse objects.
-    """
-    # Convert to pandas DataFrame for easier plotting
-    df = pd.DataFrame({
-        'Stimulus': [r.id for r in responses],
-        'Max Voltage': [r.voltage for r in responses]
-    })
-
-    # Set the style
-    sns.set(style="whitegrid")
-
-    # Create the violin plot
-    plt.figure(figsize=(8, 5))
-    sns.violinplot(x='Stimulus', y='Max Voltage', data=df, palette='muted')
-
-    plt.title('Distribution of Maximum Voltage Responses by Stimulus Type')
-    plt.xlabel('Stimulus')
-    plt.ylabel('Max Voltage')
-    plt.tight_layout()
-    plt.show()
-
-plot_voltage_violin(pat0)
-plot_voltage_violin(pat1)
-plot_voltage_violin(pat2)
-plot_voltage_violin(pat3)
-plot_voltage_violin(pat4)
-plot_voltage_violin(pat5)
-plot_voltage_violin(pat6)
-plot_voltage_violin(all_clean_data_exp1)
-```
-
-```{python}
-# creating my list of BehavioralResponse from exp2
-
-def create_patient_behaviorresponse(patientid: int, channel: int, 
-                                    database: np.ndarray) -> 
-                                    list[BehaviorResponse]:
-      """
-    Takes in a patient number, a channel number, and the database, and returns a list of VoltageResponse objects for that specific patient and experiment 1 data.
-    """
-    exp1_data = database[patient][0]  # Get exp1 data for the specified patient
-
-    voltage_responses = make_list_voltageresponses(
-        exp1_data['V'].T[channel],  # voltage data from the correct channel. 
-        exp1_data['t_on'],    # start times (indices)
-        exp1_data['t_off'],   # stop times (indices)
-        exp1_data['stim_id']  # stimulus ids
-    )
-
-    return voltage_responses                        
-                                    
-
-```
-
-
 # Ok new datatypes
 ```{python}
 # note, we are using power as a measure of response bc power is voltage squared, and this means we don't have to worry about negative values messing with things...
@@ -233,7 +120,7 @@ class BehaviorResponse:
     behav: int # 1 if face was identified, 0 otherwise
 ```
 
-# Writing Functions For Exp1: 
+# Writing Functions For Exp1 (Task 1)
 
 ```{python}
 def create_patient_power_responses(patient: int, channel: int, 
@@ -348,7 +235,7 @@ mean_houses = np.mean(list(map(lambda x: x.power, total_houses)))
 print(mean_faces, mean_houses)
 ```
 
-# Working with experiment #2
+# Working with experiment #2 (Task 2) --still in progress
 ```{python}
 def create_patient_behavior_responses(patient: int, channel: int, 
                                      database: np.ndarray) -> list[BehaviorResponse]:
