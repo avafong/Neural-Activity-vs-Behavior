@@ -105,7 +105,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="abstract" class="level1">
 <h1>Abstract</h1>
 <p>In neuroscience, a lot of literature and studies have been based on linking neural activity with specific stimuli. Examples include neurons in area IT that show consistent responses to faces, or neurons in area V1 that have extreme specificity when it comes to orientation. However, there is the question that arises naturally from this–is neural activity (that has been shown to be quite accurate when discerning and responding to specific stimuli) map directly onto predicting an organism’s behavior? In other words, does an organism have conscious access to all the information it computes? Our project aims to answer this question using electrocorticographic data from Miller’s lab that contains data from an experiment where human subjects were presented with face/house images and were required to press a button when they perceived the object to be a face. Thus, this data is rich in allowing us to compare behavioral data with neural activity; we hypothesize that the neural activity that was recorded is an effective measure/predictor of behavior (in this case, a subject’s identification of a face). However, if we find that there is flexibility in the relation between activity and perception, there is a lot of neuroscience literature that we’ve gathered that suggests that there might be an evolutionary advantage to having flexibility in behavior even though neural activity is highly accurate.</p>
-<div id="086b2733" class="cell" data-execution_count="1">
+<div id="d5abfeb2" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os, requests</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>fname <span class="op">=</span> <span class="st">'faceshouses.npz'</span></span>
@@ -126,7 +126,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="installing-packages-nilearn-and-nimare-and-import-matplotlib-as-well-as-packages-to-visualize-brains-and-electrode-locations" class="level1">
 <h1>Installing packages nilearn and nimare and import matplotlib as well as packages to visualize brains and electrode locations</h1>
-<div id="a88525e6" class="cell" data-execution_count="2">
+<div id="d07ea1d6" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> rcParams</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -142,7 +142,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="data-loading" class="level1">
 <h1>Data loading</h1>
-<div id="b4952ed0" class="cell" data-execution_count="3">
+<div id="754eb8e7" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>alldat <span class="op">=</span> np.load(fname, allow_pickle<span class="op">=</span><span class="va">True</span>)[<span class="st">'dat'</span>]</span>
@@ -161,7 +161,7 @@ dict_keys(['stim_id', 'stim_cat', 'stim_noise', 't_on', 't_off', 'key_press', 'V
 </section>
 <section id="accessing-broadband-power-in-time-varying-windows" class="level1">
 <h1>Accessing broadband power in time-varying windows</h1>
-<div id="7b302a61" class="cell" data-execution_count="4">
+<div id="73b5e0ff" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> signal</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>V <span class="op">=</span> dat1[<span class="st">'V'</span>].astype(<span class="st">'float32'</span>)</span>
@@ -177,7 +177,7 @@ dict_keys(['stim_id', 'stim_cat', 'stim_noise', 't_on', 't_off', 'key_press', 'V
 </section>
 <section id="averaging-the-broadband-power-across-all-face-stimuli-and-across-all-house-stimuli" class="level1">
 <h1>Averaging the broadband power across all face stimuli and across all house stimuli</h1>
-<div id="c4b855f1" class="cell" data-execution_count="5">
+<div id="780c8f0d" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nt, nchan <span class="op">=</span> V.shape</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>nstim <span class="op">=</span> <span class="bu">len</span>(dat1[<span class="st">'t_on'</span>])</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -191,7 +191,7 @@ dict_keys(['stim_id', 'stim_cat', 'stim_noise', 't_on', 't_off', 'key_press', 'V
 </section>
 <section id="finding-the-electrodes-that-distinguish-faces-from-houses" class="level1">
 <h1>Finding the electrodes that distinguish faces from houses</h1>
-<div id="df0a1452" class="cell" data-execution_count="6">
+<div id="ed0539dd" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> signal</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nilearn <span class="im">import</span> plotting</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -215,7 +215,7 @@ dict_keys(['stim_id', 'stim_cat', 'stim_noise', 't_on', 't_off', 'key_press', 'V
 </section>
 <section id="figuring-out-the-shape-of-the-data" class="level1">
 <h1>Figuring out the shape of the data:</h1>
-<div id="e05f7f0a" class="cell" data-execution_count="7">
+<div id="b00c4750" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#print(alldat)</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(dat1)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>investigating_loc_shape <span class="op">=</span> dat1[<span class="st">'locs'</span>].shape</span>
